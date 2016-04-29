@@ -12,7 +12,7 @@ compile-time customizable to a great extent via partial specializiation.
 
 ## Usage
 
-Just add `#include <pprint/pprint.h>` to your source file and make sure
+Just copy `include/pprint` and add `#include <pprint/pprint.h>` to your source file and make sure
 that `pprint.h` is findable.
 
 ## Example
