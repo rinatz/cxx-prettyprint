@@ -29,7 +29,7 @@ $ g++ -W -Wall -pedantic -O2 -s ppdemo98.cpp -o ppdemo98
 For the C++98/03-version, define `NO_TR1` to prevent any inclusion of
 TR1 headers and to disable `std::tr1::tuple` support.
 
-For details, please see the website (http://louisdx.github.com/cxx-prettyprint/).
+For details, please see the website https://github.com/rinatz/pprint.
 
 ## License
 
