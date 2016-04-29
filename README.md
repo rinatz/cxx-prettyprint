@@ -3,6 +3,8 @@
 A pretty printing library for C++ containers.
 This library was forked from [cxx-prettyprint](https://github.com/louisdx/cxx-prettyprint) which was written by Louis Delacroix.
 
+For details, please see the website http://rinatz.github.io/pprint/.
+
 ## Synopsis
 
 Simply by including this header-only library in your source file,
@@ -28,8 +30,6 @@ $ g++ -W -Wall -pedantic -O2 -s ppdemo98.cpp -o ppdemo98
 
 For the C++98/03-version, define `NO_TR1` to prevent any inclusion of
 TR1 headers and to disable `std::tr1::tuple` support.
-
-For details, please see the website http://rinatz.github.io/pprint/.
 
 ## License
 
