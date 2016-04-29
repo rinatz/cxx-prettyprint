@@ -1,6 +1,7 @@
 # pprint
 
 A pretty printing library for C++ containers.
+This library was forked from [cxx-prettyprint](https://github.com/louisdx/cxx-prettyprint) which was written by louisdx.
 
 ## Synopsis
 
