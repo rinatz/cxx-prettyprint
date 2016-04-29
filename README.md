@@ -12,16 +12,12 @@ compile-time customizable to a great extent via partial specializiation.
 
 ## Usage
 
-Just add `#include "prettyprint.hpp"` to your source file and make sure
-that prettyprint.hpp is findable.
-
-### Language requirements
-
-C++0x for `prettyprint.hpp`, C++98/03 for `prettyprint98.hpp`.
+Just add `#include <pprint/pprint.h>` to your source file and make sure
+that `pprint.h` is findable.
 
 ## Example
 
-Some usage examples are provided by `ppdemo.cpp`.
+Some usage examples are provided by `example/ppdemo.cpp`.
 
 Using GCC, compile with
 
