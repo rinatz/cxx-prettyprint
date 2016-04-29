@@ -1,4 +1,4 @@
-# cxx-prettyprint
+# pprint
 
 A pretty printing library for C++ containers.
 
