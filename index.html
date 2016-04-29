@@ -1,234 +1,72 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
-<html>
+<!DOCTYPE html>
+<html lang="en-us">
   <head>
-    <title>A C++ Container Pretty-Printer</title>
-    <link type="text/css" rel="stylesheet" href="default.css">
-    <meta http-equiv="Content-type" content="text/html; charset=iso-8859-1">
-    <style type="text/css">
-      html { margin: 0; padding: 0; font-size: medium; font-family: Calibri, "DejaVu Sans", "Trebuchet MS", Helvetica, sans-serif; }
-      body { margin: 3em auto; max-width: 66em; padding: 0; line-height: 1.5em; }
-      h2 { font-size: 1.25em; font-weight: bold; line-height: 1.25em; margin: 1em 0 .5em 0; padding: 0; }
-      h1 { font-size: 2em; font-weight: bold; line-height: 1.25em; }
-      a:link, a:visited { color: maroon; text-decoration: none; border-bottom: 1px dotted #DAA; }
-      a:link:hover, a:visited:hover { color: white; border: none; background-color: maroon; }
-      code { font-family: Consolas, "DejaVu Mono Sans", Courier, monospace; }
-      p.footnote { font-size: .8em; line-height: 1em; }
-      span.subtitle { font-size: .75em; font-weight: normal; font-style: italic; }
-      div.listing { font-family: monospace; padding: 0 2em; white-space: pre; }
-    </style>
+    <meta charset="UTF-8">
+    <title>pprint by rinatz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
   <body>
+    <section class="page-header">
+      <h1 class="project-name">pprint</h1>
+      <h2 class="project-tagline">A header-only library for C++(0x) that allows automagic pretty-printing of any container.</h2>
+      <a href="https://github.com/rinatz/pprint" class="btn">View on GitHub</a>
+      <a href="https://github.com/rinatz/pprint/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/rinatz/pprint/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <h1>cxx-prettyprint: A C++ Container Pretty-Printer</h1>
+    <section class="main-content">
+      <h1>
+<a id="pprint" class="anchor" href="#pprint" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>pprint</h1>
 
-    <p>Please visit the <a href="https://github.com/louisdx/cxx-prettyprint">source code repository</a> on GitHub.</p>
+<p>A pretty printing library for C++ containers.
+This library was forked from <a href="http://louisdx.github.io/cxx-prettyprint/">cxx-prettyprint</a> which was written by Louis Delacroix.</p>
 
-    <p><strong>Download:</strong> <a href="https://raw.github.com/louisdx/cxx-prettyprint/master/prettyprint.hpp">prettyprint.hpp</a> (C++11), <a href="https://raw.github.com/louisdx/cxx-prettyprint/master/prettyprint.hpp">prettyprint98.hpp</a> (C++98/03),
-    or the <a href="http://github.com/louisdx/cxx-prettyprint/zipball/master">zip ball</a> or <a href="http://github.com/louisdx/cxx-prettyprint/tarball/master">tar.gz ball</a>.</p>
+<h2>
+<a id="synopsis" class="anchor" href="#synopsis" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Synopsis</h2>
 
-    <h2>Updates</h2>
-    <p>Aug. 2014: Some refactoring of the C++11 code. Tuples and pairs are now containers, and the special
-    logic has been moved into a dedicated template used for printing the container body. This removes several
-    dodgy overloads from the namespace std. Some old code and comments have also been removed, and more demo
-    cases added.</p>
+<p>Simply by including this header-only library in your source file,
+you can say <code>std::cout &lt;&lt; x</code> for any container object <code>x</code>. Sensible
+defaults are provided, but the behaviour (i.e. the delimiters) are
+compile-time customizable to a great extent via partial specializiation.</p>
 
-    <p>Nov. 2011: There is now a new wrapper <code>bucket_print</code>, which iterates
-    only over one <em>bucket</em> of containers based on hash tables (such as the <code>unordered_*</code>
-    containers in the standard library). See below for details.</p>
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
 
-    <h2>Breaking news (July 11, 2011)</h2>
+<p>Just copy <code>include/pprint</code> and add <code>#include &lt;pprint/pprint.h&gt;</code> to your source file and make sure
+that <code>pprint.h</code> is findable.</p>
 
-    <p>We are thrilled to announce that the indomitable <em>Stephan T Lavavej</em> has
-    been inspired by this library to make an episode of <em>Advanced STL</em> about container
-    pretty printing &mdash; thank you very much!</p>
-    <p style="margin: 1em auto; border: 2px maroon solid; border-radius: 4px; width: 16em; text-align: center; font-size: large; padding: 1em;"><a href="http://channel9.msdn.com/Shows/Going+Deep/C9-Lectures-Stephan-T-Lavavej-Advanced-STL-6-of-n">Watch &ldquo;Advanced STL #6&rdquo; now!</a></p>
-    <p>We will try to incorporate some of STL&rsquo;s excellent ideas into this library, stay tuned.
-    In the meantime, check out <a href="https://skydrive.live.com/redir.aspx?cid=e66e02dc83efb165&resid=E66E02DC83EFB165!292">his
-    own pretty printer code</a>!</p>
-    <p><strong>Updates:</strong> Following STL&rsquo;s ideas, the library has now been improved
-    to support static arrays directly without the need for a wrapper. Also, the library should
-    now be usable in MS Visual Studio 2010.</p><p>Furthermore, there is now a version that works
-    in C++98/03 compliant compilers. It uses TR1 tuples by default, but all dependence on TR1
-    libraries can be removed by defining <code>NO_TR1</code>.</p>
+<h2>
+<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
 
-    <h2>Quick start</h2>
+<p>Some usage examples are provided by <code>example/ppdemo.cpp</code>.</p>
 
-    <p>Download <a href="https://raw.github.com/louisdx/cxx-prettyprint/master/prettyprint.hpp">prettyprint.hpp</a>
-    and place it in your source directory. Add <code>#include "prettyprint.hpp"</code> to your source file. You are ready!</p>
+<p>Using GCC, compile with</p>
 
-    <div class="listing">#include &lt;iostream&gt;
-#include &lt;vector&gt;
-#include "prettyprint.hpp"
+<div class="highlight highlight-source-shell"><pre>$ g++ -W -Wall -pedantic -O2 -s ppdemo.cpp -o ppdemo -std=c++0x
+$ g++ -W -Wall -pedantic -O2 -s ppdemo98.cpp -o ppdemo98</pre></div>
 
-int main()
-{
-  std::vector&lt;int&gt; foo;
-  foo.push_back(1);
-  foo.push_back(2);
-  foo.push_back(3);
+<p>For the C++98/03-version, define <code>NO_TR1</code> to prevent any inclusion of
+TR1 headers and to disable <code>std::tr1::tuple</code> support.</p>
 
-  std::cout &lt;&lt; "My vector: " &lt;&lt; foo &lt;&lt; std::endl;
-}</div>
+<p>For details, please see the website <a href="https://github.com/rinatz/pprint">https://github.com/rinatz/pprint</a>.</p>
 
-    <p><strong>Note:</strong> This library relies on C++11 features. With gcc, pass the option <code>-std=c++11</code>.</p>
+<h2>
+<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
 
-    <h2>Description</h2>
+<p>Boost Software License, Version 1.0.</p>
 
-    <p><em>cxx-prettyprint</em> is a header-only library for C++ which provides printing via the &lt;&lt;-operator
-    for any container class. Before we go into the details, let us quickly think about what we need to do:</p>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/rinatz/pprint">pprint</a> is maintained by <a href="https://github.com/rinatz">rinatz</a>.</span>
 
-    <ul>
-      <li>An empty container should print as <code>[]</code>.</li>
-      <li>A container with a single element should print as <code>[3]</code>.</li>
-      <li>A container with <var>n</var>&nbsp;&gt;&nbsp;1 elements should print as <code>[3, -11, 137]</code>;
-      note that there are <var>n</var>&nbsp;&minus;&nbsp;1 delimiters.</li>
-      <li>Each element should be printed with its own output operator, in particular nested containers should
-      be printed by recursively applying the above rules.</li>
-    </ul>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-    <p>The <em>cxx-prettyprint</em> library provides precisely this functionality. We are using the following default
-    settings for the delimiters (but see below for how to customize):</p>
+    </section>
 
-    <ul>
-      <li>The separating delimiter is always &ldquo;<code>, </code>&rdquo; (comma, space).</li>
-      <li>Pairs and tuples are enclosed in round brackets (parentheses): <code>(1, foo)</code>.</li>
-      <li>Sets are enclosed in curly braces: <code>{1, 5, 11}</code>.</li>
-      <li>All other containers are enclosed in square brackets: <code>[1.4, -1.2, Inf, 88.6]</code>.</li>
-    </ul>
-    <p>These lexical conventions attempt to mimic popular mathematical notation for tuples, sets and vectors, respectively.</p>
-
-    <h3>Example</h3>
-    <p>Suppose we map integers to sets of strings.</p>
-    <div class="listing">typedef std::map&lt;int, std::set&lt;std::string&gt;&gt;; map_type;
-
-map_type foo = { { 1, std::set&lt;std::string&gt;{ std::string("cat"),  std::string("dog"),  std::string("doe") } },
-                 { 3, std::set&lt;std::string&gt;{ std::string("goose"), std::string("moose"), std::string("ruse") } } };
-
-std::cout &lt;&lt; foo &lt;&lt; std::endl;</div>
-    <p>The output would look like so:</p>
-    <div class="listing">[(1, {cat, doe, dog}), (3, {goose, moose, ruse})]</div>
-
-    <h2>Raw C arrays</h2>
-
-    <p>Raw C arrays are handled the same way as &ldquo;proper&rdquo; containers:</p>
-
-    <div class="listing">int arr[] = { 1, 4, 9, 16 };
-std::cout &lt;&lt; arr &lt;&lt; std::endl;</div>
-
-    <p>However, if the array size is not known at compile time, a wrapper may be invoked via <code>pretty_print_array(arr, size)</code>.</p>
-
-    <h2>Hash containers</h2>
-
-    <p>Certain containers based on hash tables offer an additional interface to the internal <em>buckets</em> of the hash
-    table. This interface comes in the form of <em>local</em> iterators, accessed via <code>begin(n)</code> and <code>end(n)</code>,
-    where <code>n</code> indicates the bucket number. Examples of such containers are the <code>unordered_*</code> containers
-    from the standard libray.</p>
-
-    <p>Individual buckets may be printed with the wrapper <code>bucket_print</code>, used as follows:</p>
-
-    <div class="listing">std::unordered_map&lt;std::string, int&gt; m;
-fill_map(m); // populate map
-for (unsigned int i = 0; i != m.bucket_count(); ++i)
-{
-  std::cout &lt;&lt; "Bucket " &lt;&lt; i &lt;&lt; ": " &lt;&lt; bucket_print(m, i) &lt;&lt; std::endl;
-}</div>
-
-
-    <h2>Advanced usage: Customizing the delimiters</h2>
-
-    <p>The delimiters that are used by the output operation are deduced from compile-time static class constants.
-    In particular, if <code>T</code> denotes any container type, then the appropriate delimiters are defined
-    by the following templated structure:</p>
-    <div class="listing">namespace pretty_print
-{
-    template&lt;typename TChar&gt; struct delimiters_values
-    {
-        typedef TChar char_type;
-        const TChar * prefix;
-        const TChar * delimiter;
-        const TChar * postfix;
-    };
-
-    template&lt;typename T, typename TChar&gt; struct delimiters
-    {
-        typedef delimiters_values&lt;TChar&gt; type;
-        static const type values; 
-    };
-} // namespace</div>
-
-    <p>The templates are parametrized on <code>TChar</code>, the type of the character,
-    which is <code>char</code> for <code>std::cout</code> and <code>wchar_t</code> for
-    <code>std::wcout</code>. You must define <code>delimiters&lt;T, TChar&gt;::values</code>
-    for your container type <code>T</code>. For example, the default delimiters for
-    <code>TChar = char</code> are declared  as follows:</p>
-
-    <div class="listing">template&lt;typename T&gt; struct delimiters&lt;T, char&gt; { static const delimiters_values&lt;char&gt; values; };
-template&lt;typename T&gt; const delimiters_values&lt;char&gt; delimiters&lt;T, char&gt;::values = { "[", ", ", "]" };</div>
-
-    <h3>Overriding delimiters</h3>
-
-    <p>The most straight-forward way to override delimiters for a particular container is to specialize the <code>delimiters</code> struct
-    accordingly. For example, if we want special delimiters for a vector of doubles, we specialize as follows:</p>
-
-    <div class="listing">template&lt;&gt; const pretty_print::delimiters_values&lt;char&gt; pretty_print::delimiters&lt;std::vector&lt;double&gt;, char&gt;::values = { "< ", " ; ", " >" };</div>
-
-    <p>An alternative solution is to provide your own delimiters class. That is a class with a public, static constant named <code>values</code>
-    and of type <code>pretty_print::delimiters_values&lt;TChar&gt;</code>, where you must provide a concrete instance of <code>TChar</code> suitable
-    for your output operation (usually <code>char</code>). With such a class, say <code>MyDelims</code>, you can invoke a wrapper class for any
-    container, say <code>v</code>:</p>
-
-    <div class="listing">std::cout &lt;&lt; pretty_print::custom_delims&lt;MyDelims&gt;(v) &lt;&lt; std::endl;</div>
-
-    <p>(The wrapper class <code>custom_delims</code> uses type erasure to call the relevant internal helper instance
-    of the type of <code>v</code>.) Your delimiter class could for example be declared as follows:</p>
-
-    <div class="listing">struct MyDelims { static const pretty_print::delimiters_values&lt;char&gt; values; };
-const pretty_print::delimiters_values&lt;char> MyDelims::values = { "&lt;", "; ", "&gt;" };</div>
-
-    <p>As a rule of thumb: Specialize <code>pretty_print::delimiters</code> if you want uniform delimiters for
-    a particular container type, and use the <code>pretty_print::custom_delims</code> wrapper with your own
-    delimiter class if you want to use a fixed set of delimiters for a variety of containers on a one-off basis.</p>
-
-    <h2>Internals</h2>
-
-    <p>The key component of the library is a combination of <code>std::enable_if</code> together with
-    a typetrait <code>is_container&lt;T&gt;</code>. This type trait uses the SFINAE (substitution failure
-    is not an error) model to determine whether a type <code>T::const_iterator</code> exists. If yes,
-    <code>operator&lt;&lt;()</code> is overloaded for type <code>T</code>, and a loop from <code>begin()</code>
-    to <code>end()</code> is performed, inserting the appropriate delimiters.</p>
-
-    <p>The <code>custom_delims</code> helper class uses type-erasure to take an arbitrary container object
-    and instantiate the correct template of the internal helper class with the user-provided delimiter class.</p>
-
-    <h2>Versions</h2>
-
-    There are two versions of the library: One for C++0x compliant compilers and MS Visual C++ 2010,
-    called &ldquo;prettyprint.hpp&rdquo;, and one for C++98/03 compliant compilers called &ldquo;prettyprint98.hpp&rdquo;.
-    The latter makes use of the TR1 libraries to support tuples, but this dependence (and support for tuples)
-    can be disabled by defining <code>NO_TR1</code>.
-
-    <h2>Credits</h2>
-
-    <p>This library is the product of many great contributions to my questions on StackOverflow and on Channel&nbsp;9.
-    Here is the original <a href="http://stackoverflow.com/questions/4850473/pretty-print-c-stl-containers">StackOverflow working topic</a>,
-    here is the <a href="http://stackoverflow.com/questions/6245735/pretty-print-stdtuple">follow-up on printing tuples</a>,
-    and finally the <a href="http://channel9.msdn.com/Forums/TechOff/Templated-STL-container-pretty-printer">Channel&nbsp;9 thread</a> where
-    it all came together. Credits go to Marcelo Cantos for the initial approach, to Sven Groot for an improved, self-contained
-    solution which became the foundation for my code, and to Xeo for the tuple-printing code.</p>
-
-    <h2>To do</h2>
-
-    <p>Possible avenues for future improvements:</p>
-    <ul>
-      <li>Re-enable a pretty-printing output iterator as in Sven's <a href="http://stackoverflow.com/questions/4850473/pretty-print-c-stl-containers/6240947#6240947">original code</a>.</li>
-      <li>Make customization of delimiters easier and nestable.</li>
-      <li>Consider whether the <code>is_container</code> typetrait is too aggressive more carefully. Examples where this library breaks existing code are most appreciated!</li>
-    </ul>
-
-    <p>If you like to help out, just send me a message on <a href="https://github.com/louisdx/cxx-prettyprint">GitHub</a>,
-    <a href="mailto:yoursecretsaresafe@googlemail.com">email me patches or suggestions</a>, or send pull requests.</p>
-
-    <p style="text-align: right; font-style: italic;">louisdx</p>
-
+  
   </body>
 </html>
