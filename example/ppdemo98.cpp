@@ -18,16 +18,16 @@
 #include <tr1/array>
 #include <tr1/tuple>
 
-#include "prettyprint98.hpp"
+#include <pprint/pprint.h>
 
 /* Customization option 1: Direct partial/full specialization.
    Here we specialize for std::vector<double>.
 */
-template<> const pretty_print::delimiters_values<char> pretty_print::delimiters<std::vector<double>, char>::values = { "|| ", " : ", " ||" };
+template<> const pprint::delimiters_values<char> pprint::delimiters<std::vector<double>, char>::values = { "|| ", " : ", " ||" };
 
 /* Customization option 2: Create a delimiters class for later use and reuse. */
-struct MyDelims { static const pretty_print::delimiters_values<char> values; };
-const pretty_print::delimiters_values<char> MyDelims::values = { "<", "; ", ">" };
+struct MyDelims { static const pprint::delimiters_values<char> values; };
+const pprint::delimiters_values<char> MyDelims::values = { "<", "; ", ">" };
 
 
 /* Demo: run with a couple of command-line arguments. */
@@ -82,10 +82,10 @@ int main(int argc, char * argv[])
   ;
 
   /* Demo: Here we use our reusable delimiter class MyDelims by directly accessing some interna. */
-  std::cout << pretty_print::print_container_helper<std::vector<std::string>, char, std::char_traits<char>, MyDelims>(v) << std::endl;
+  std::cout << pprint::print_container_helper<std::vector<std::string>, char, std::char_traits<char>, MyDelims>(v) << std::endl;
 
   /* Demo: Here we achieve the same using a type-erasing helper class. */
-  std::cout << pretty_print::custom_delims<MyDelims>(v) << std::endl;
+  std::cout << pprint::custom_delims<MyDelims>(v) << std::endl;
 
   /* Demo: We can pretty-print std::pair and std::tuple.
      (You already saw pairs in the associative containers above.)

@@ -278,7 +278,7 @@ namespace pprint
 } // namespace pprint
 
 template<typename TChar, typename TCharTraits, typename Delims>
-inline std::basic_ostream<TChar, TCharTraits> & operator<<(std::basic_ostream<TChar, TCharTraits> & s, const pprint::::custom_delims<Delims> & p)
+inline std::basic_ostream<TChar, TCharTraits> & operator<<(std::basic_ostream<TChar, TCharTraits> & s, const pprint::custom_delims<Delims> & p)
 {
     return p.base->stream(s);
 }
@@ -339,7 +339,7 @@ namespace std
 
 // Prints a tuple to the stream using delimiters from delimiters<std::pair<tuple_dummy_t, tuple_dummy_t>>.
 
-namespace pretty_print
+namespace pprint
 {
     struct tuple_dummy_t { }; // Just if you want special delimiters for tuples.
 
@@ -367,7 +367,7 @@ namespace pretty_print
             stream << ::std::tr1::get<0>(value);
         }
     };
-} // namespace pretty_print
+} // namespace pprint
 
 
 /* The following macros allow us to write "template <TUPLE_PARAMAS> std::tuple<TUPLE_ARGS>"
@@ -403,7 +403,7 @@ namespace std
 
 // A wrapper for raw C-style arrays. Usage: int arr[] = { 1, 2, 4, 8, 16 };  std::cout << wrap_array(arr) << ...
 
-namespace pretty_print
+namespace pprint
 {
     template<typename T>
     struct array_wrapper_n
@@ -419,12 +419,12 @@ namespace pretty_print
         const T * const _array;
         size_t _n;
     };
-} // namespace pretty_print
+} // namespace pprint
 
 template<typename T>
 inline pprint::array_wrapper_n<T> pretty_print_array(const T * const a, size_t n)
 {
-  return pretty_print::array_wrapper_n<T>(a, n);
+  return pprint::array_wrapper_n<T>(a, n);
 }
 
 
