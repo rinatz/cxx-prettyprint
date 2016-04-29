@@ -22,42 +22,215 @@
       <h1>
 <a id="pprint" class="anchor" href="#pprint" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>pprint</h1>
 
-<p>A pretty printing library for C++ containers.
-This library was forked from <a href="http://louisdx.github.io/cxx-prettyprint/">cxx-prettyprint</a> which was written by Louis Delacroix.</p>
+<pre><code>Caution
+
+This text is the little fixed version of the text wrote by
+Louis Delacroix stored at https://github.com/louisdx/cxx-prettyprint as prettyprint.tex.
+</code></pre>
+
+<p>We present a header-only library for C++ which enables formatted output
+for arbitrary containers in the usual style like
+<code>std::cout &lt;&lt; x &lt;&lt; std::endl;</code>. The only requirements on the type <code>T</code> of
+<code>x</code> is that it have a member type <code>T::const_iterator</code> and methods
+<code>T::begin()</code> and <code>T::end()</code>.</p>
 
 <h2>
-<a id="synopsis" class="anchor" href="#synopsis" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Synopsis</h2>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introduction</h2>
 
-<p>Simply by including this header-only library in your source file,
-you can say <code>std::cout &lt;&lt; x</code> for any container object <code>x</code>. Sensible
-defaults are provided, but the behaviour (i.e. the delimiters) are
-compile-time customizable to a great extent via partial specializiation.</p>
-
-<h2>
-<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Usage</h2>
-
-<p>Just copy <code>include/pprint</code> and add <code>#include &lt;pprint/pprint.h&gt;</code> to your source file and make sure
-that <code>pprint.h</code> is findable.</p>
+<p>Templated containers are fundamental in C++ and occur ubiquitously. Yet
+producing formatted output of containers requires either a loop ranging
+over the container’s elements, or an overload of <code>operator&lt;&lt;</code> for the
+desired container. One frequently finds oneself writing the same pattern
+of code time and time again. It would be handy if printing a container
+would “just work”. This is what the <code>prettyprint</code> library achieves.</p>
 
 <h2>
-<a id="example" class="anchor" href="#example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example</h2>
+<a id="expectations" class="anchor" href="#expectations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Expectations</h2>
 
-<p>Some usage examples are provided by <code>example/ppdemo.cpp</code>.</p>
+<p>This library was designed to meet the following generic expectations for
+formatted output of a container:</p>
 
-<p>Using GCC, compile with</p>
+<ul>
+<li>  The empty container should print as “<code>[]</code>”.</li>
+<li>  A container with one element should print as “<code>[3]</code>”.</li>
+<li>  A container with $n$ elements should print as “<code>[4, -1, 11, 8]</code>”.</li>
+<li>  The container’s elements should be printed by recursively invoking formatted output.</li>
+</ul>
 
-<div class="highlight highlight-source-shell"><pre>$ g++ -W -Wall -pedantic -O2 -s ppdemo.cpp -o ppdemo -std=c++0x
-$ g++ -W -Wall -pedantic -O2 -s ppdemo98.cpp -o ppdemo98</pre></div>
+<p>Formatted container output in this library has three parameters: The
+opening delimiter, the closing delimiter, and the separator. All three
+parameters should be customizable, but sensible defaults should be
+provided so that formatted output works without any action on the user’s
+part. We chose to select the following defaults:</p>
 
-<p>For the C++98/03-version, define <code>NO_TR1</code> to prevent any inclusion of
-TR1 headers and to disable <code>std::tr1::tuple</code> support.</p>
+<ul>
+<li>  The separator is always “<code>,</code>”.</li>
+<li>  Pairs and tuples appear in round parentheses: “<code>(a, b)</code>”.</li>
+<li>  Sets and (set-likes) appear in curly braces: “<code>{3, -7, 18}</code>”.</li>
+<li>  All other containers appear in square brackets: “<code>[2, 2, 0, 1]</code>”.</li>
+</ul>
 
-<p>For details, please see the website <a href="https://github.com/rinatz/pprint">https://github.com/rinatz/pprint</a>.</p>
+<p>These defaults are inspired by the prevailing typographic tradition of
+mathematical notation, and we hope that they are both intuitive and
+æsthetically pleasing.</p>
+
+<p>Note that key-value containers are not treated specially, since their
+value type is simply <code>std::pair&lt;key_type, mapped_type&gt;</code>.</p>
 
 <h2>
-<a id="license" class="anchor" href="#license" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>License</h2>
+<a id="acknowledgements" class="anchor" href="#acknowledgements" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acknowledgements</h2>
 
-<p>Boost Software License, Version 1.0.</p>
+<p>Credits go to Marcelo Cantos for the initial approach, to Sven Groot for
+an improved, self-contained solution which became the foundation for
+this code, and to StackOverflow’s Xeo for the tuple-printing code. This
+library would not have been possible without the support of these
+people.</p>
+
+<h2>
+<a id="installation-and-usage" class="anchor" href="#installation-and-usage" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation and Usage</h2>
+
+<p>Simply make the header file <code>pprint/pprint.h</code> available and include it
+in your code. Containers can be printed immediately:</p>
+
+<div class="highlight highlight-source-c++"><pre>#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>vector<span class="pl-pds">&gt;</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>map<span class="pl-pds">&gt;</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>set<span class="pl-pds">&gt;</span></span>
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>iostream<span class="pl-pds">&gt;</span></span>
+
+#<span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">&lt;</span>pprint/pprint.h<span class="pl-pds">&gt;</span></span>
+
+<span class="pl-k">int</span> <span class="pl-en">main</span>()
+{
+  std::vector&lt;<span class="pl-k">int</span>&gt;        v;
+  std::set&lt;<span class="pl-k">double</span>&gt;        s;
+  std::map&lt;<span class="pl-c1">size_t</span>, <span class="pl-k">void</span>*&gt; m;
+  <span class="pl-k">int</span>                     a[<span class="pl-c1">10</span>];
+
+  <span class="pl-c">// populate containers</span>
+
+  std::cout &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>Vector:  <span class="pl-pds">"</span></span> &lt;&lt; v &lt;&lt; std::endl
+            &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>Set:     <span class="pl-pds">"</span></span> &lt;&lt; s &lt;&lt; std::endl
+            &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>Map:     <span class="pl-pds">"</span></span> &lt;&lt; m &lt;&lt; std::endl
+            &lt;&lt; <span class="pl-s"><span class="pl-pds">"</span>C-Array: <span class="pl-pds">"</span></span> &lt;&lt; <span class="pl-c1">pretty_print::array_wrapper</span>(a) &lt;&lt; std::endl;
+}</pre></div>
+
+<p>This will output something like the following:</p>
+
+<pre><code>Vector:  [1, 2, 3]
+Set:     {4.2, -1.3, NaN}
+Map:     [(15, CD01EF23), (9, 19283ABC), (25, D2A92158)]
+C-Array: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+</code></pre>
+
+<h2>
+<a id="c-style-arrays" class="anchor" href="#c-style-arrays" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>C-style arrays</h2>
+
+<p>In the usage example above we introduced a helper function called
+<code>pprint::array_wrapper</code> which can be used to print C-style arrays
+in the same fashion as other containers. It comes in two overloads, one
+for compile-time sized arrays and one for dynamically sized arrays:</p>
+
+<pre><code>size_t n = get_number(), m = get_number();
+int a[] = {1, 2, 4, 8};  // stack array of static size 4
+int * b = new int[n];    // heap array of dynamic size n
+int c[m];                // stack array of dynamic size m (VLA)
+
+std::cout &lt;&lt; pretty_print::array_wrapper(a)     &lt;&lt; std::endl  // 1
+          &lt;&lt; pretty_print::array_wrapper(b, n)  &lt;&lt; std::endl  // 2
+          &lt;&lt; pretty_print::array_wrapper(c, m); &lt;&lt; std::endl  // 2
+</code></pre>
+
+<p>In case (1) the array size is deduced at compile time; in cases (2) and
+(3) the array size has to be passed explicitly to the wrapper function.</p>
+
+<h2>
+<a id="advanced-features-customizing-delimiters" class="anchor" href="#advanced-features-customizing-delimiters" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Advanced Features: Customizing Delimiters</h2>
+
+<h3>
+<a id="note" class="anchor" href="#note" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Note</h3>
+
+<p>All internal of the library live in the namespace <code>pprint</code>.</p>
+
+<p>The only advanced feature of the library at this point is the ability to
+customize the delimiters used during printing. There are two ways to do
+this:</p>
+
+<ul>
+<li>  Create a (partial or explicit) specialisation of a helper class for a specific container type and use the usual output syntax.</li>
+<li>  Create a helper class holding custom delimiters and invoking a modified, slightly more verbose output function.</li>
+</ul>
+
+<p>The two approaches meet orthogonal needs: If you have a container that
+is used repeatedly and which always must appear with custom delimiters,
+use the first approach and specialize the <code>delimiters</code> struct for your
+container type. On the other hand, if you have a set of delimiters that
+you only want to use in certain situations (but with any sort of
+container), create a helper class to hold your delimiters and invoke
+output with the <code>custom_delims</code> function like this:</p>
+
+<div class="highlight highlight-source-c++"><pre>std::cout &lt;&lt; pprint::custom_delims&lt;MyDelims&gt;(x) &lt;&lt; std::endl;</pre></div>
+
+<h3>
+<a id="method-1-specialize" class="anchor" href="#method-1-specialize" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Method 1: Specialize</h3>
+
+<p>The default delimiter class is:</p>
+
+<div class="highlight highlight-source-c++"><pre><span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T, <span class="pl-k">typename</span> TChar&gt; <span class="pl-k">struct</span> <span class="pl-en">pprint</span>::delimiters;</pre></div>
+
+<p>All delimiter classes are templated on a character type <code>TChar</code>, which
+should match the desired output stream parameter (i.e. <code>char</code> for
+<code>ostream</code> and <code>wchar_t</code> for <code>wostream</code>), and on the container type <code>T</code>.
+The class has a static member constant <code>values</code> of type
+<code>delimiters_values&lt;T, TChar&gt;</code>, which itself is defined like this:</p>
+
+<div class="highlight highlight-source-c++"><pre><span class="pl-k">template</span>&lt;<span class="pl-k">typename</span> TChar&gt; <span class="pl-k">struct</span> <span class="pl-en">delimiters_values</span>
+{
+    <span class="pl-k">typedef</span> TChar char_type;
+    <span class="pl-k">const</span> TChar * prefix;
+    <span class="pl-k">const</span> TChar * delimiter;
+    <span class="pl-k">const</span> TChar * postfix;
+};</pre></div>
+
+<p>By providing an explicit or partial specialization of <code>delimiters</code>, the
+delimiter parameters can be changed globally for a specific container
+type.</p>
+
+<h4>
+<a id="example-1" class="anchor" href="#example-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example 1</h4>
+
+<p>We specialize for <code>std::vector&lt;double&gt;</code> to print “<code>((1.2; -3.4; 5.6))</code>”.</p>
+
+<div class="highlight highlight-source-c++"><pre><span class="pl-k">template </span>&lt;&gt; <span class="pl-k">const</span> pprint::delimiters_values&lt;<span class="pl-k">char</span>&gt;
+pprint::delimiters&lt;std::vector&lt;<span class="pl-k">double</span>&gt;, <span class="pl-k">char</span>&gt;::values = { <span class="pl-s"><span class="pl-pds">"</span>((<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>; <span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>))<span class="pl-pds">"</span></span> };</pre></div>
+
+<h4>
+<a id="example-2" class="anchor" href="#example-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Example 2</h4>
+
+<p>We specialize for all <code>std::list&lt;T&gt;</code> to print “<code>a–b–c</code>”.</p>
+
+<div class="highlight highlight-source-c++"><pre><span class="pl-k">template </span>&lt;<span class="pl-k">typename</span> T&gt; <span class="pl-k">const</span> pprint::delimiters_values&lt;<span class="pl-k">char</span>&gt;
+pprint::delimiters&lt;std::list&lt;T&gt;, <span class="pl-k">char</span>&gt;::values = { <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>--<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span><span class="pl-pds">"</span></span> };</pre></div>
+
+<h3>
+<a id="method-2-custom-delimiter-class" class="anchor" href="#method-2-custom-delimiter-class" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Method 2: Custom delimiter class</h3>
+
+<p>Instead of providing specializations for the default delimiter class, we
+can also create our own delimiter class. It must provide a static member
+constant <code>values</code> just like the default class. For example:</p>
+
+<div class="highlight highlight-source-c++"><pre><span class="pl-k">struct</span> <span class="pl-en">HalfOpen</span>
+{
+  <span class="pl-k">static</span> <span class="pl-k">const</span> pprint::delimiters_values&lt;<span class="pl-c1">wchar_t</span>&gt; values;
+};
+<span class="pl-k">const</span> pprint::delimiters_values&lt;<span class="pl-c1">wchar_t</span>&gt;
+HalfOpen::values = { L<span class="pl-s"><span class="pl-pds">"</span>[<span class="pl-pds">"</span></span>, L<span class="pl-s"><span class="pl-pds">"</span>, L<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>)<span class="pl-pds">"</span></span> };
+
+std::wcout &lt;&lt; pprint::custom_delims&lt;HalfOpen&gt;(x) &lt;&lt; std::endl;</pre></div>
+
+<h2>
+<a id="implementation" class="anchor" href="#implementation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Implementation</h2>
+
+<p>[To be written.]</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/rinatz/pprint">pprint</a> is maintained by <a href="https://github.com/rinatz">rinatz</a>.</span>
