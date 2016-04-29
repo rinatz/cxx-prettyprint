@@ -36,4 +36,4 @@ For details, please see the website (http://louisdx.github.com/cxx-prettyprint/)
 
 ## License
 
-Boost Software License, Version 1.0. See http://www.boost.org/LICENSE_1_0.txt.
+Boost Software License, Version 1.0.
