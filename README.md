@@ -2,7 +2,6 @@
 
 A pretty printing library for C++ containers.
 This library was forked from [cxx-prettyprint](https://github.com/louisdx/cxx-prettyprint) which was written by Louis Delacroix.
-
 For details, please see the website http://rinatz.github.io/pprint/.
 
 ## Synopsis
