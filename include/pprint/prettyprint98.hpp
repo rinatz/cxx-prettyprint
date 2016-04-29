@@ -4,8 +4,8 @@
 //          http://www.boost.org/LICENSE_1_0.txt)
 
 
-#ifndef H_PRETTY_PRINT
-#define H_PRETTY_PRINT
+#ifndef PPRINT_PPRINT_H_
+#define PPRINT_PPRINT_H_
 
 
 #include <ostream>
@@ -18,7 +18,7 @@
 #  include <tr1/unordered_set>
 #endif
 
-namespace pretty_print
+namespace pprint
 {
 
     template <bool, typename S, typename T> struct conditional { };
@@ -94,7 +94,7 @@ namespace pretty_print
     struct delimiters
     {
         typedef delimiters_values<TChar> type;
-        static const type values; 
+        static const type values;
     };
 
 
@@ -219,7 +219,7 @@ namespace pretty_print
 
     // Type-erasing helper class for easy use of custom delimiters.
     // Requires TCharTraits = std::char_traits<TChar> and TChar = char or wchar_t, and MyDelims needs to be defined for TChar.
-    // Usage: "cout << pretty_print::custom_delims<MyDelims>(x)".
+    // Usage: "cout << pprint::custom_delims<MyDelims>(x)".
 
     struct custom_delims_base
     {
@@ -235,11 +235,11 @@ namespace pretty_print
 
         ::std::ostream & stream(::std::ostream & s)
         {
-          return s << ::pretty_print::print_container_helper<T, char, ::std::char_traits<char>, Delims>(t);
+          return s << ::pprint::print_container_helper<T, char, ::std::char_traits<char>, Delims>(t);
         }
         ::std::wostream & stream(::std::wostream & s)
         {
-          return s << ::pretty_print::print_container_helper<T, wchar_t, ::std::char_traits<wchar_t>, Delims>(t);
+          return s << ::pprint::print_container_helper<T, wchar_t, ::std::char_traits<wchar_t>, Delims>(t);
         }
 
     private:
@@ -254,10 +254,10 @@ namespace pretty_print
         custom_delims_base * base;
     };
 
-} // namespace pretty_print
+} // namespace pprint
 
 template<typename TChar, typename TCharTraits, typename Delims>
-inline std::basic_ostream<TChar, TCharTraits> & operator<<(std::basic_ostream<TChar, TCharTraits> & s, const pretty_print::custom_delims<Delims> & p)
+inline std::basic_ostream<TChar, TCharTraits> & operator<<(std::basic_ostream<TChar, TCharTraits> & s, const pprint::::custom_delims<Delims> & p)
 {
     return p.base->stream(s);
 }
@@ -267,8 +267,8 @@ inline std::basic_ostream<TChar, TCharTraits> & operator<<(std::basic_ostream<TC
 //
 // Implement as "template<T, C, A> const sdelims::type sdelims<std::set<T,C,A>>::values = { ... }."
 
-//template<typename T> using pp_sdelims = pretty_print::delimiters<T, char>;
-//template<typename T> using pp_wsdelims = pretty_print::delimiters<T, wchar_t>;
+//template<typename T> using pp_sdelims = pprint::delimiters<T, char>;
+//template<typename T> using pp_wsdelims = pprint::delimiters<T, wchar_t>;
 
 
 namespace std
@@ -277,7 +277,7 @@ namespace std
 
     template<typename T, typename TChar, typename TCharTraits, typename TDelimiters>
     inline basic_ostream<TChar, TCharTraits> & operator<<(basic_ostream<TChar, TCharTraits> & stream,
-                                                          const ::pretty_print::print_container_helper<T, TChar, TCharTraits, TDelimiters> & helper)
+                                                          const ::pprint::print_container_helper<T, TChar, TCharTraits, TDelimiters> & helper)
     {
         helper(stream);
         return stream;
@@ -286,28 +286,28 @@ namespace std
     // Prints a container to the stream using default delimiters
 
     template<typename T, typename TChar, typename TCharTraits>
-    inline typename ::pretty_print::enable_if< ::pretty_print::is_container<T>::value, basic_ostream<TChar, TCharTraits>&>::type
+    inline typename ::pprint::enable_if< ::pprint::is_container<T>::value, basic_ostream<TChar, TCharTraits>&>::type
     operator<<(basic_ostream<TChar, TCharTraits> & stream, const T & container)
     {
-        return stream << ::pretty_print::print_container_helper<T, TChar, TCharTraits>(container);
+        return stream << ::pprint::print_container_helper<T, TChar, TCharTraits>(container);
     }
 
     // Prints a pair to the stream using delimiters from delimiters<std::pair<T1, T2>>.
     template<typename T1, typename T2, typename TChar, typename TCharTraits>
     inline basic_ostream<TChar, TCharTraits> & operator<<(basic_ostream<TChar, TCharTraits> & stream, const pair<T1, T2> & value)
     {
-        if (::pretty_print::delimiters<pair<T1, T2>, TChar>::values.prefix != NULL)
-            stream << ::pretty_print::delimiters<pair<T1, T2>, TChar>::values.prefix;
+        if (::pprint::delimiters<pair<T1, T2>, TChar>::values.prefix != NULL)
+            stream << ::pprint::delimiters<pair<T1, T2>, TChar>::values.prefix;
 
         stream << value.first;
 
-        if (::pretty_print::delimiters<pair<T1, T2>, TChar>::values.delimiter != NULL)
-            stream << ::pretty_print::delimiters<pair<T1, T2>, TChar>::values.delimiter;
+        if (::pprint::delimiters<pair<T1, T2>, TChar>::values.delimiter != NULL)
+            stream << ::pprint::delimiters<pair<T1, T2>, TChar>::values.delimiter;
 
         stream << value.second;
 
-        if (::pretty_print::delimiters<pair<T1, T2>, TChar>::values.postfix != NULL)
-            stream << ::pretty_print::delimiters<pair<T1, T2>, TChar>::values.postfix;
+        if (::pprint::delimiters<pair<T1, T2>, TChar>::values.postfix != NULL)
+            stream << ::pprint::delimiters<pair<T1, T2>, TChar>::values.postfix;
 
         return stream;
     }
@@ -365,13 +365,13 @@ namespace std
     template<typename TChar, typename TCharTraits, TUPLE_PARAMS>
     inline basic_ostream<TChar, TCharTraits> & operator<<(basic_ostream<TChar, TCharTraits> & stream, const tr1::tuple<TUPLE_ARGS> & value)
     {
-        if (::pretty_print::delimiters< ::pretty_print::tuple_dummy_pair, TChar>::values.prefix != NULL)
-            stream << ::pretty_print::delimiters< ::pretty_print::tuple_dummy_pair, TChar>::values.prefix;
+        if (::pprint::delimiters< ::pprint::tuple_dummy_pair, TChar>::values.prefix != NULL)
+            stream << ::pprint::delimiters< ::pprint::tuple_dummy_pair, TChar>::values.prefix;
 
-        ::pretty_print::pretty_tuple_helper<const tr1::tuple<TUPLE_ARGS> &, tr1::tuple_size<tr1::tuple<TUPLE_ARGS> >::value, TChar, TCharTraits>::print(stream, value);
+        ::pprint::pretty_tuple_helper<const tr1::tuple<TUPLE_ARGS> &, tr1::tuple_size<tr1::tuple<TUPLE_ARGS> >::value, TChar, TCharTraits>::print(stream, value);
 
-        if (::pretty_print::delimiters< ::pretty_print::tuple_dummy_pair, TChar>::values.postfix != NULL)
-            stream << ::pretty_print::delimiters< ::pretty_print::tuple_dummy_pair, TChar>::values.postfix;
+        if (::pprint::delimiters< ::pprint::tuple_dummy_pair, TChar>::values.postfix != NULL)
+            stream << ::pprint::delimiters< ::pprint::tuple_dummy_pair, TChar>::values.postfix;
 
         return stream;
     }
@@ -401,10 +401,10 @@ namespace pretty_print
 } // namespace pretty_print
 
 template<typename T>
-inline pretty_print::array_wrapper_n<T> pretty_print_array(const T * const a, size_t n)
+inline pprint::array_wrapper_n<T> pretty_print_array(const T * const a, size_t n)
 {
   return pretty_print::array_wrapper_n<T>(a, n);
 }
 
 
-#endif
+#endif  // PPRINT_PPRINT_H_

@@ -8,8 +8,8 @@
 // Usage:
 // Include this header, and operator<< will "just work".
 
-#ifndef H_PRETTY_PRINT
-#define H_PRETTY_PRINT
+#ifndef PPRINT_PPRINT_H_
+#define PPRINT_PPRINT_H_
 
 #include <cstddef>
 #include <iterator>
@@ -22,7 +22,7 @@
 #include <utility>
 #include <valarray>
 
-namespace pretty_print
+namespace pprint
 {
     namespace detail
     {
@@ -89,7 +89,7 @@ namespace pretty_print
     struct delimiters
     {
         using type = delimiters_values<TChar>;
-        static const type values; 
+        static const type values;
     };
 
 
@@ -317,7 +317,7 @@ namespace pretty_print
 
     // Type-erasing helper class for easy use of custom delimiters.
     // Requires TCharTraits = std::char_traits<TChar> and TChar = char or wchar_t, and MyDelims needs to be defined for TChar.
-    // Usage: "cout << pretty_print::custom_delims<MyDelims>(x)".
+    // Usage: "cout << pprint::custom_delims<MyDelims>(x)".
 
     struct custom_delims_base
     {
@@ -406,21 +406,21 @@ namespace pretty_print
         const size_type n;
     };
 
-}   // namespace pretty_print
+}   // namespace pprint
 
 
 // Global accessor functions for the convenience wrappers
 
 template<typename T>
-inline pretty_print::array_wrapper_n<T> pretty_print_array(const T * const a, size_t n)
+inline pprint::array_wrapper_n<T> pretty_print_array(const T * const a, size_t n)
 {
-    return pretty_print::array_wrapper_n<T>(a, n);
+    return pprint::array_wrapper_n<T>(a, n);
 }
 
-template <typename T> pretty_print::bucket_print_wrapper<T>
+template <typename T> pprint::bucket_print_wrapper<T>
 bucket_print(const T & m, typename T::size_type n)
 {
-    return pretty_print::bucket_print_wrapper<T>(m, n);
+    return pprint::bucket_print_wrapper<T>(m, n);
 }
 
 
@@ -432,14 +432,14 @@ namespace std
     // Prints a container to the stream using default delimiters
 
     template<typename T, typename TChar, typename TCharTraits>
-    inline typename enable_if< ::pretty_print::is_container<T>::value,
+    inline typename enable_if< ::pprint::is_container<T>::value,
                               basic_ostream<TChar, TCharTraits> &>::type
     operator<<(basic_ostream<TChar, TCharTraits> & stream, const T & container)
     {
-        return stream << ::pretty_print::print_container_helper<T, TChar, TCharTraits>(container);
+        return stream << ::pprint::print_container_helper<T, TChar, TCharTraits>(container);
     }
 }
 
 
 
-#endif  // H_PRETTY_PRINT
+#endif  // PPRINT_PPRINT_H_
